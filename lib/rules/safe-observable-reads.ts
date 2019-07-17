@@ -42,7 +42,7 @@ const module: TSESLint.RuleModule<"rawObservable", Options> = {
         ],
         messages: {
             rawObservable:
-                "Observables should only be unwrapped in useObservable or useComputed, or with peek",
+                "Observables in react components should use useObservable, useComputed, or .peek()",
         },
     },
     create(context) {
