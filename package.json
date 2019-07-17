@@ -1,0 +1,41 @@
+{
+    "name": "eslint-plugin-ko-react",
+    "version": "0.0.0",
+    "description": "Eslint plugin for ko-react package",
+    "keywords": [
+        "eslint",
+        "eslintplugin",
+        "eslint-plugin"
+    ],
+    "author": "Retsam",
+    "main": "dist/index.js",
+    "files": ["dist"],
+    "scripts": {
+        "build": "npx tsc --build tsconfig.json",
+        "dist": "npx rollup -c",
+        "prepare": "npm run dist",
+        "run_tests": "NODE_PATH=dist/src npx ava",
+        "test": "npm run build && npm run run_tests"
+    },
+    "dependencies": {
+        "requireindex": "~1.1.0"
+    },
+    "devDependencies": {
+        "ava": "^1.4.1",
+        "eslint": "~3.9.1",
+        "husky": "^2.2.0",
+        "prettier": "1.17.1",
+        "rollup": "^1.11.3",
+        "rollup-plugin-typescript2": "^0.21.0",
+        "typescript": "^3.4.5"
+    },
+    "husky": {
+        "hooks": {
+            "pre-push": "npm test"
+        }
+    },
+    "engines": {
+        "node": ">=0.10.0"
+    },
+    "license": "ISC"
+}

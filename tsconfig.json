@@ -1,0 +1,8 @@
+// Main entry point for the project, controls no files, but specifies all of the sub-projects.
+{
+    "references": [
+        {"path": "./src"},
+        {"path": "./tests"}
+    ],
+    "files": []
+}

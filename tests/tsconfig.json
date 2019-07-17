@@ -1,0 +1,9 @@
+{
+    "extends": "../tsconfig-base.json",
+    "compilerOptions": {
+        "target": "esnext",
+        "composite": true,
+        "outDir": "../dist/tests"
+    },
+    "references": [{ "path": "../lib" }]
+}
