@@ -3,7 +3,8 @@
     "compilerOptions": {
         "target": "esnext",
         "composite": true,
-        "outDir": "../dist/tests"
+        "outDir": "../build/tests",
+        "types": ["node"]
     },
     "references": [{ "path": "../lib" }]
 }

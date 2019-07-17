@@ -2,12 +2,13 @@ import typescriptPlugin from 'rollup-plugin-typescript2';
 import typescript from "typescript";
 
 export default {
-    input: 'src/index.ts',
+    input: 'lib/index.ts',
     output: {
-      file: 'dist/runner.js',
+      file: 'dist/index.js',
       format: 'cjs'
     },
     plugins: [ typescriptPlugin({
-        typescript: typescript
+      typescript: typescript
     }) ],
+    external: ["tsutils", "@typescript-eslint/typescript-estree"],
 };

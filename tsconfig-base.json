@@ -6,7 +6,7 @@
     "target": "es5",
     "module": "commonjs",
     "strict": true,
-    "baseUrl": "./src",
+    "baseUrl": "./lib",
     // Empty types array, so sub-projects need to specify which typings they depend on
     //  and so typings don't 'leak' between projects.
     "types": [],
