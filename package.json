@@ -1,6 +1,6 @@
 {
     "name": "eslint-plugin-ko-react",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Eslint plugin for ko-react package",
     "keywords": [
         "eslint",
@@ -9,7 +9,9 @@
     ],
     "author": "Retsam",
     "main": "dist/index.js",
-    "files": ["dist"],
+    "files": [
+        "dist"
+    ],
     "scripts": {
         "build": "npx tsc --build tsconfig.json",
         "dist": "npx rollup -c",
