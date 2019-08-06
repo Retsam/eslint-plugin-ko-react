@@ -42,7 +42,7 @@ function Component() {
         validTSX(`
 const notObservable = function() { return 5; };
 function Component() {
-  notObservable();
+  const value = notObservable();
   return <div>Test</div>;
 }
 `),
@@ -50,7 +50,7 @@ function Component() {
 const observable = ${fakeObservable};
 class MyComponent {
   render() {
-    observable();
+    const value = observable();
     return <div>Test</div>;
   }
 }
@@ -92,11 +92,11 @@ function Component() {
 const observable = ${fakeObservable};
 function Component() {
   function callback() {
-    observable();
+    const value = observable();
   }
   return <div>Test</div>;
 }`,
-            errors: [ruleError(5, 5)],
+            errors: [ruleError(5, 19)],
             filename: "test.tsx",
         },
         {
@@ -104,10 +104,10 @@ function Component() {
             code: `
 const obj = {prop: ${fakeObservable}};
 function Component() {
-  obj.prop();
+  const value = obj.prop();
   return <div>Test</div>;
 }`,
-            errors: [ruleError(4, 3)],
+            errors: [ruleError(4, 17)],
             filename: "test.tsx",
         },
         {

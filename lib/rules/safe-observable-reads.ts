@@ -1,7 +1,6 @@
 import { TSESTree, TSESLint } from "@typescript-eslint/experimental-utils";
 import * as ts from "typescript";
 import { unionTypeParts } from "tsutils";
-import { AST_NODE_TYPES } from "@typescript-eslint/typescript-estree";
 import { getParserServices } from "../util";
 
 function returnsJSX(node: TSESTree.ReturnStatement) {
@@ -9,10 +8,12 @@ function returnsJSX(node: TSESTree.ReturnStatement) {
         return false;
     }
     const returnType = node.argument.type;
-    return returnType === AST_NODE_TYPES.JSXElement;
+    return returnType === "JSXElement";
 }
 
-type Options = [{ additionalHooks?: string[] } | undefined];
+type Options = [
+    { additionalHooks?: string[]; mode?: "normal" | "paranoia" } | undefined
+];
 
 const module: TSESLint.RuleModule<"rawObservable", Options> = {
     meta: {
@@ -36,6 +37,13 @@ const module: TSESLint.RuleModule<"rawObservable", Options> = {
                             type: "string",
                         },
                     },
+                    mode: {
+                        enum: ["normal", "paranoia"],
+                        description:
+                            "Specifies the mechanism by which potential observables are identified,\n" +
+                            '"normal" uses types to identify observables\n' +
+                            '"paranoia" assumes anything that might be an observable is one',
+                    },
                 },
                 additionalProperties: false,
             },
@@ -46,17 +54,41 @@ const module: TSESLint.RuleModule<"rawObservable", Options> = {
         },
     },
     create(context) {
-        const service = getParserServices(context);
-        const checker = service.program.getTypeChecker();
-
         const opts = context.options[0] || {};
         const additionalHooks = opts.additionalHooks || [];
+        const paranoiaMode = opts.mode === "paranoia";
 
-        /** Anything with a subscribe function (according to the types) */
         function isKnockoutObservableRead(node: TSESTree.CallExpression) {
             if (node.arguments.length) {
                 return false;
             }
+            if (node.parent!.type === "ExpressionStatement") {
+                return false;
+            }
+
+            // If paranoid, assume that anything that might be an observable is.
+            if (paranoiaMode) {
+                // Assume that properties called peek, toString, or dispose aren't observables
+                if (
+                    node.callee.type === "MemberExpression" &&
+                    node.callee.property.type === "Identifier" &&
+                    (node.callee.property.name === "peek" ||
+                        node.callee.property.name === "toString" ||
+                        node.callee.property.name === "dispose")
+                ) {
+                    return false;
+                }
+
+                // TODO: check if it's a locally defined function?
+
+                return true;
+            }
+
+            const service = getParserServices(context);
+            const checker = service.program.getTypeChecker();
+
+            // Otherwise check if the thing being called as a function has a subscribe function
+            //  according to the types
             const tsNode = service.esTreeNodeToTSNodeMap.get<ts.CallExpression>(
                 node,
             );
