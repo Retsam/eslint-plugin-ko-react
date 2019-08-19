@@ -124,12 +124,7 @@ const module: TSESLint.RuleModule<"rawObservable", Options> = {
             return false;
         }
         function validateFunctionCall(node: TSESTree.CallExpression) {
-            if (
-                isKnockoutObservableRead(node) &&
-                true &&
-                // isInsideReactComponent(node) &&
-                !isInsideUseComputed(node)
-            ) {
+            if (isKnockoutObservableRead(node) && !isInsideUseComputed(node)) {
                 context.report({ messageId: "rawObservable", node: node });
             }
         }
