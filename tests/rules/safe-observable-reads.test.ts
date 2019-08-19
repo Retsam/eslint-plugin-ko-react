@@ -87,6 +87,17 @@ function Component() {
             filename: "test.tsx",
         },
         {
+            //JSX fragment
+            code: `
+const observable = ${fakeObservable};
+function Component() {
+  const value = observable();
+  return <></>
+}`,
+            errors: [ruleError(4, 17)],
+            filename: "test.tsx",
+        },
+        {
             // Nested callback
             code: `
 const observable = ${fakeObservable};

@@ -8,7 +8,7 @@ function returnsJSX(node: TSESTree.ReturnStatement) {
         return false;
     }
     const returnType = node.argument.type;
-    return returnType === "JSXElement";
+    return returnType === "JSXElement" || returnType === "JSXFragment";
 }
 
 type Options = [
