@@ -1,6 +1,6 @@
 {
     "name": "eslint-plugin-ko-react",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "description": "Eslint plugin for ko-react package",
     "keywords": [
         "eslint",
