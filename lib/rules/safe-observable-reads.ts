@@ -128,9 +128,23 @@ const module: TSESLint.RuleModule<"rawObservable", Options> = {
         }
 
         interface CodePathData {
+            /** Does the function return JSX?  (To identify React components) */
             isJSXFunction: boolean;
-            childCodePaths: CodePathData[];
+            /**
+             * Function calls that may be unsafe observable reads; tracked so they can be validated
+             * if the function is determined to return JSX.
+             */
             functionCalls: TSESTree.CallExpression[];
+            /**
+             * Tracks functions defined in the current function, their functionCalls will also be validated
+             * if this function returns JSX.
+             */
+            childCodePaths: CodePathData[];
+            /**
+             * State that tracks whether we're inside an expression that's being returned from the
+             * current function.  Used to identify JSX functions.
+             */
+            isReturning: boolean;
         }
         // Reverse stack (shift/unshift), newest element at front
         const pathsStack = [] as CodePathData[];
@@ -140,6 +154,7 @@ const module: TSESLint.RuleModule<"rawObservable", Options> = {
             //  function returns JSX
             onCodePathStart: () => {
                 const newPathData: CodePathData = {
+                    isReturning: false,
                     isJSXFunction: false,
                     childCodePaths: [],
                     functionCalls: [],
@@ -156,11 +171,32 @@ const module: TSESLint.RuleModule<"rawObservable", Options> = {
                 pathsStack[0].functionCalls.push(node);
             },
 
+            // Track when we're inside a return expression
+            ReturnStatement: () => {
+                pathsStack[0].isReturning = true;
+            },
+            "ReturnStatement:exit": () => {
+                pathsStack[0].isReturning = false;
+            },
+            // special case for () => /* expression */ variant, treat like a return statement
+            ArrowFunctionExpression: node => {
+                if (node.body.type !== "BlockStatement") {
+                    pathsStack[0].isReturning = true;
+                }
+            },
+            "ArrowFunctionExpression:exit": () => {
+                pathsStack[0].isReturning = false;
+            },
+
             JSXElement: () => {
-                pathsStack[0].isJSXFunction = true;
+                if (pathsStack[0].isReturning) {
+                    pathsStack[0].isJSXFunction = true;
+                }
             },
             JSXFragment: () => {
-                pathsStack[0].isJSXFunction = true;
+                if (pathsStack[0].isReturning) {
+                    pathsStack[0].isJSXFunction = true;
+                }
             },
 
             // If the function returned JSX, validate all the tracked CallExpressions in current function

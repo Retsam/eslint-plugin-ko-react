@@ -53,8 +53,12 @@ class MyComponent {
     const value = observable();
     return <div>Test</div>;
   }
-}
-    `),
+}`),
+        validTSX(`
+const observable = ${fakeObservable};
+it("doesn't flag observable reads outside of components, e.g. tests", () => {
+  const el = render(<MyComponent value={observable()} />);
+})`),
         `
 const observable = ${fakeObservable};
 function notAComponent() {
