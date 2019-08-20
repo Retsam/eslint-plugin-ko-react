@@ -141,6 +141,22 @@ function Component() {
             errors: [ruleError(5, 19)],
             filename: "test.tsx",
         },
+        // TODO: Maybe fix, someday.  Until then it's not too big of a hole.
+        //         {
+        //             // JSX only in nested function
+        //             code: `
+        // const observable = ${fakeObservable};
+        // function Component() {
+        //   function returnsJSX() {
+        //     return <div>Test</div>;
+        //   }
+        //   if(observable()) {
+        //     return returnsJSX();
+        //   }
+        // }`,
+        //             errors: [ruleError(7, 6)],
+        //             filename: "test.tsx",
+        //         },
         {
             // Object property
             code: `
