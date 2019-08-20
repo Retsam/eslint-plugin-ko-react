@@ -3,12 +3,8 @@ import * as ts from "typescript";
 import { unionTypeParts } from "tsutils";
 import { getParserServices } from "../util";
 
-function returnsJSX(node: TSESTree.ReturnStatement) {
-    if (!node.argument) {
-        return false;
-    }
-    const returnType = node.argument.type;
-    return returnType === "JSXElement" || returnType === "JSXFragment";
+function isJSXElement(node: TSESTree.Node) {
+    return node.type === "JSXElement" || node.type === "JSXFragment";
 }
 
 type Options = [
@@ -166,7 +162,12 @@ const module: TSESLint.RuleModule<"rawObservable", Options> = {
 
             // If JSX is returned, mark current function as a JSX function
             ReturnStatement: node => {
-                if (returnsJSX(node)) {
+                if (node.argument && isJSXElement(node.argument)) {
+                    pathsStack[0].isJSXFunction = true;
+                }
+            },
+            ArrowFunctionExpression: node => {
+                if (isJSXElement(node.body)) {
                     pathsStack[0].isJSXFunction = true;
                 }
             },

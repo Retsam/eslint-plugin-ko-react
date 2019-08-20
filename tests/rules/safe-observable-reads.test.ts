@@ -98,6 +98,26 @@ function Component() {
             filename: "test.tsx",
         },
         {
+            // arrow function with expression body
+            code: `
+const observable = ${fakeObservable};
+const Component = () => (
+  <div>{observable()}</div>
+);`,
+            errors: [ruleError(4, 9)],
+            filename: "test.tsx",
+        },
+        {
+            // arrow function with JSX fragment expression body
+            code: `
+const observable = ${fakeObservable};
+  const Component = () => (
+  <>{observable()}</>
+);`,
+            errors: [ruleError(4, 6)],
+            filename: "test.tsx",
+        },
+        {
             // Nested callback
             code: `
 const observable = ${fakeObservable};
