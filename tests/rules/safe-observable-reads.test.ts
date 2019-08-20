@@ -118,6 +118,17 @@ const observable = ${fakeObservable};
             filename: "test.tsx",
         },
         {
+            // ternary with JSX
+            code: `
+const observable = ${fakeObservable};
+const Component = () => {
+  return true ? (<div>{observable()}</div>) : (<></>);
+}
+`,
+            errors: [ruleError(4, 24)],
+            filename: "test.tsx",
+        },
+        {
             // Nested callback
             code: `
 const observable = ${fakeObservable};

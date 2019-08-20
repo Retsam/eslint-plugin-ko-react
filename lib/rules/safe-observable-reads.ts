@@ -3,10 +3,6 @@ import * as ts from "typescript";
 import { unionTypeParts } from "tsutils";
 import { getParserServices } from "../util";
 
-function isJSXElement(node: TSESTree.Node) {
-    return node.type === "JSXElement" || node.type === "JSXFragment";
-}
-
 type Options = [
     { additionalHooks?: string[]; mode?: "normal" | "paranoia" } | undefined
 ];
@@ -160,16 +156,11 @@ const module: TSESLint.RuleModule<"rawObservable", Options> = {
                 pathsStack[0].functionCalls.push(node);
             },
 
-            // If JSX is returned, mark current function as a JSX function
-            ReturnStatement: node => {
-                if (node.argument && isJSXElement(node.argument)) {
-                    pathsStack[0].isJSXFunction = true;
-                }
+            JSXElement: () => {
+                pathsStack[0].isJSXFunction = true;
             },
-            ArrowFunctionExpression: node => {
-                if (isJSXElement(node.body)) {
-                    pathsStack[0].isJSXFunction = true;
-                }
+            JSXFragment: () => {
+                pathsStack[0].isJSXFunction = true;
             },
 
             // If the function returned JSX, validate all the tracked CallExpressions in current function
