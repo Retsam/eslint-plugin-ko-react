@@ -1,13 +1,13 @@
 import path from "path";
 import rule from "../../lib/rules/safe-observable-reads";
-import { TSESLint } from "@typescript-eslint/experimental-utils";
+import { TSESLint } from "@typescript-eslint/utils";
 
 const RuleTester = TSESLint.RuleTester;
 
 const rootPath = path.join(process.cwd(), "tests/fixtures/");
 
 const ruleTester = new RuleTester({
-    parser: "@typescript-eslint/parser",
+    parser: require.resolve("@typescript-eslint/parser"),
     parserOptions: {
         ecmaFeatures: {
             jsx: true,
@@ -24,8 +24,6 @@ const ruleError = (line: number, column: number) => ({
 });
 
 const validTSX = (test: string) => ({
-    // https://github.com/typescript-eslint/typescript-eslint/issues/160
-    filename: "test.tsx",
     code: test,
 });
 
@@ -75,7 +73,6 @@ const MyComponent = () => {
   return <div>Test</div>;
 }`,
             options: [{ additionalHooks: ["useMyCustomHook"] }],
-            filename: "test.tsx",
         },
     ],
     invalid: [
@@ -88,7 +85,6 @@ function Component() {
   return <div></div>
 }`,
             errors: [ruleError(4, 17)],
-            filename: "test.tsx",
         },
         {
             //JSX fragment
@@ -99,7 +95,6 @@ function Component() {
   return <></>
 }`,
             errors: [ruleError(4, 17)],
-            filename: "test.tsx",
         },
         {
             // arrow function with expression body
@@ -109,7 +104,6 @@ const Component = () => (
   <div>{observable()}</div>
 );`,
             errors: [ruleError(4, 9)],
-            filename: "test.tsx",
         },
         {
             // arrow function with JSX fragment expression body
@@ -119,7 +113,6 @@ const observable = ${fakeObservable};
   <>{observable()}</>
 );`,
             errors: [ruleError(4, 6)],
-            filename: "test.tsx",
         },
         {
             // ternary with JSX
@@ -130,7 +123,6 @@ const Component = () => {
 }
 `,
             errors: [ruleError(4, 24)],
-            filename: "test.tsx",
         },
         {
             // Nested callback
@@ -143,7 +135,6 @@ function Component() {
   return <div>Test</div>;
 }`,
             errors: [ruleError(5, 19)],
-            filename: "test.tsx",
         },
         // TODO: Maybe fix, someday.  Until then it's not too big of a hole.
         //         {
@@ -159,7 +150,6 @@ function Component() {
         //   }
         // }`,
         //             errors: [ruleError(7, 6)],
-        //             filename: "test.tsx",
         //         },
         {
             // Object property
@@ -170,7 +160,6 @@ function Component() {
   return <div>Test</div>;
 }`,
             errors: [ruleError(4, 17)],
-            filename: "test.tsx",
         },
         {
             // Unconfigured custom hook
@@ -183,7 +172,6 @@ const MyComponent = () => {
   return <div>Test</div>;
 }`,
             errors: [ruleError(5, 17)],
-            filename: "test.tsx",
         },
     ],
 });

@@ -1,4 +1,4 @@
-import { TSESTree, TSESLint } from "@typescript-eslint/experimental-utils";
+import { TSESTree, TSESLint } from "@typescript-eslint/utils";
 import * as ts from "typescript";
 import { unionTypeParts } from "tsutils";
 import { getParserServices } from "../util";
@@ -13,7 +13,6 @@ const module: TSESLint.RuleModule<"rawObservable", Options> = {
         docs: {
             description:
                 "Ensure that knockout observables and computeds are properly unwrapped inside react components",
-            category: "Best Practices",
             recommended: "error",
             url: "TODO",
         },
@@ -81,9 +80,7 @@ const module: TSESLint.RuleModule<"rawObservable", Options> = {
 
             // Otherwise check if the thing being called as a function has a subscribe function
             //  according to the types
-            const tsNode = service.esTreeNodeToTSNodeMap.get<ts.CallExpression>(
-                node,
-            );
+            const tsNode = service.esTreeNodeToTSNodeMap.get(node);
             const calleeNode = tsNode.expression;
             const calleeType = checker.getTypeAtLocation(calleeNode);
             for (const ty of unionTypeParts(calleeType)) {
@@ -207,7 +204,7 @@ const module: TSESLint.RuleModule<"rawObservable", Options> = {
                     /* is class method */
                     codePathNode.parent &&
                     (codePathNode.parent.type === "MethodDefinition" ||
-                        codePathNode.parent.type === "ClassProperty") &&
+                        codePathNode.parent.type === "PropertyDefinition") &&
                     codePathNode.parent.value === codePathNode
                 ) {
                     // Ignore class methods

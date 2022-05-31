@@ -1,4 +1,4 @@
-import { TSESLint } from "@typescript-eslint/experimental-utils";
+import { TSESLint } from "@typescript-eslint/utils";
 
 export function getParserServices(context: TSESLint.RuleContext<any, any>) {
     const { parserServices } = context;
