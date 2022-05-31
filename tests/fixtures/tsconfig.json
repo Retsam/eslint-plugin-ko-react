@@ -1,9 +1,12 @@
 {
     "compilerOptions": {
-      "target": "es5",
-      "module": "commonjs",
-      "strict": true,
-      "esModuleInterop": true,
-      "lib": ["es2015", "es2017", "esnext"]
-    }
-  }
+        "target": "es5",
+        "module": "commonjs",
+        "strict": true,
+        "esModuleInterop": true,
+        "lib": ["es2015", "es2017", "esnext"]
+    },
+    // This is the fake file name generated for lint rule tests, need to include it to avoid the error
+    //  where typescript-eslint errors on linting files not listed in the project
+    "files": ["estree.tsx"]
+}
