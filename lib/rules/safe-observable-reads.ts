@@ -6,6 +6,7 @@ import { getParserServices } from "../util";
 type Options = [
     { additionalHooks?: string[]; mode?: "normal" | "paranoia" } | undefined
 ];
+const defaultOptions: Options = [{}];
 
 const module: TSESLint.RuleModule<"rawObservable", Options> = {
     meta: {
@@ -13,7 +14,6 @@ const module: TSESLint.RuleModule<"rawObservable", Options> = {
         docs: {
             description:
                 "Ensure that knockout observables and computeds are properly unwrapped inside react components",
-            recommended: "error",
             url: "TODO",
         },
         schema: [
@@ -29,6 +29,7 @@ const module: TSESLint.RuleModule<"rawObservable", Options> = {
                         },
                     },
                     mode: {
+                        type: "string",
                         enum: ["normal", "paranoia"],
                         description:
                             "Specifies the mechanism by which potential observables are identified,\n" +
@@ -44,6 +45,7 @@ const module: TSESLint.RuleModule<"rawObservable", Options> = {
                 "Observables in react components should use useObservable, useComputed, or .peek()",
         },
     },
+    defaultOptions,
     create(context) {
         const opts = context.options[0] || {};
         const additionalHooks = opts.additionalHooks || [];

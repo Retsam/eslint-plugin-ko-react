@@ -1,10 +1,11 @@
 {
     "extends": "../tsconfig-base.json",
     "compilerOptions": {
-      "target": "es5",
-      "types": [],
-      "composite": true,
-      "outDir": "../build/lib",
-      "lib": ["dom", "es2015"]
+        "target": "es5",
+        "types": [],
+        "composite": true,
+        "outDir": "../build/lib",
+        "stripInternal": true,
+        "lib": ["dom", "es2015"]
     }
-  }
+}
